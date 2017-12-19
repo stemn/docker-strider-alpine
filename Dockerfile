@@ -1,25 +1,34 @@
 FROM node:alpine
 
-# Clone the alpine package
 RUN apk add --update \
     --repository http://dl-3.alpinelinux.org/alpine/edge/main \
-    git curl make gcc g++ python libgcc libstdc++ libc6-compat \
-    && rm -rf /var/cache/apk/*
+    git curl make gcc g++ libgcc libstdc++ libc6-compat && \
+    rm -rf /var/cache/apk/*
 
-# Set the working directory
-WORKDIR /app
+VOLUME /home/strider/.strider
 
-# Clone Strider
-RUN git clone https://github.com/Strider-CD/strider.git
-RUN cd strider && npm install 
+# Create User
+RUN adduser -g '' -h /home/strider -D strider 
 
-RUN ../
+# Add permissions to user
+RUN mkdir -p /home/strider && mkdir -p /opt/strider
+RUN chown -R strider:strider /home/strider
+RUN chown -R strider:strider /opt/strider
 
-# Add directories
-ADD package.json .
-ADD src src
+# Build as root 
+USER root
+RUN ln -s /opt/strider/bin/strider /usr/local/bin/strider
+RUN git clone --depth 1 https://github.com/Strider-CD/strider /opt/strider/src &&\
+    cd /opt/strider/src && npm install && npm run build
 
-# Install the node packages
-RUN npm install 
 
 
+COPY start.sh /usr/local/bin/start.sh
+
+#ADD strider.conf /etc/supervisor/conf.d/strider.conf
+
+EXPOSE 3000
+
+USER root
+
+CMD ["bash", "/usr/local/bin/start.sh"]
