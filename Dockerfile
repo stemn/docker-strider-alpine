@@ -12,23 +12,15 @@ RUN adduser -g '' -h /home/strider -D strider
 
 # Add permissions to user
 RUN mkdir -p /home/strider && mkdir -p /opt/strider
-RUN chown -R strider:strider /home/strider
-RUN chown -R strider:strider /opt/strider
+RUN chown -R strider:strider /home/strider /opt/strider
 
 # Build as root 
 USER root
-RUN ln -s /opt/strider/bin/strider /usr/local/bin/strider
 RUN git clone --depth 1 https://github.com/Strider-CD/strider /opt/strider/src &&\
     cd /opt/strider/src && npm install && npm run build
 
+# Link to bin so we just have to call strider
+RUN ln -s /opt/strider/src/bin/strider /bin/strider
 
-
-COPY start.sh /usr/local/bin/start.sh
-
-#ADD strider.conf /etc/supervisor/conf.d/strider.conf
-
+# Expose port 3000
 EXPOSE 3000
-
-USER root
-
-CMD ["bash", "/usr/local/bin/start.sh"]
