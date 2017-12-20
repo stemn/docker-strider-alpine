@@ -4,6 +4,7 @@ LABEL maintainer="tom@stemn.com"
 RUN apk add --update \
     --repository http://dl-3.alpinelinux.org/alpine/edge/main \
     git curl make gcc g++ libgcc libstdc++ libc6-compat && \
+    apk add openssh && \
     rm -rf /var/cache/apk/*
 
 VOLUME /home/strider/.strider
