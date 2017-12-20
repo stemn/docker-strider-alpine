@@ -1,4 +1,5 @@
 FROM node:alpine
+LABEL maintainer="tom@stemn.com"
 
 RUN apk add --update \
     --repository http://dl-3.alpinelinux.org/alpine/edge/main \
