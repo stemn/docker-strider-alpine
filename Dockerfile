@@ -7,12 +7,6 @@ RUN apk add --update \
     openssh python && \
     rm -rf /var/cache/apk/*
 
-#Stemn specifici Dependencies 
-RUN apk add --update \
-    --repository http://dl-3.alpinelinux.org/alpine/edge/testing \
-    vips-tools vips-dev fftw-dev \
-    rm -rf /var/cache/apk/*
-
 VOLUME /home/strider/.strider
 
 # Create User
